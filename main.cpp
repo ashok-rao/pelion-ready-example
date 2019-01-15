@@ -21,6 +21,8 @@
 #include "simple-mbed-cloud-client.h"
 #include "FATFileSystem.h"
 
+DigitalOut modem_power_on(PE_15);
+
 // An event queue is a very useful structure to debounce information between contexts (e.g. ISR and normal threads)
 // This is great because things such as network operations are illegal in ISR, so updating a resource in a button's fall() function is not allowed
 EventQueue eventQueue;
@@ -102,6 +104,9 @@ void registered(const ConnectorClientEndpointInfo *endpoint) {
 }
 
 int main(void) {
+
+	modem_power_on = 1;
+
     printf("Starting Simple Pelion Device Management Client example\n");
     printf("Connecting to the network...\n");
 
