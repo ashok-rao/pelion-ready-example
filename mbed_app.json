@@ -12,23 +12,29 @@
     "target_overrides": {
         "*": {
             "platform.stdio-baud-rate"          : 115200,
-            "platform.default-serial-baud-rate": 115200,
+            "platform.default-serial-baud-rate" : 115200,
             "platform.stdio-convert-newlines"   : true,
             "platform.stdio-buffered-serial"    : false,
             "mbed-trace.enable"                 : false,
-            "lwip.ipv4-enabled"                    : true,
-            "lwip.ethernet-enabled"                : false,
-            "lwip.ppp-enabled"                     : false,
-            "lwip.tcp-enabled"                     : true,
-            "cellular.debug-at"                    : true,
+            "lwip.ipv4-enabled"                 : true,
+            "lwip.ethernet-enabled"             : false,
+            "lwip.ppp-enabled"                  : false,
+            "lwip.tcp-enabled"                  : true,
+            "cellular.debug-at"                 : false,
             "nanostack-hal.event_loop_thread_stack_size" : 5120,
             "mbed-client.event-loop-size"       : 1024,
             "mbed-client.sn-coap-duplication-max-msgs-count": 1
         },
         "MTB_STM_L475": {
             "target.network-default-interface-type": "CELLULAR",
-            "target.macros_add"                    : ["CELLULAR_DEVICE = QUECTEL_BG96", "MDMTXD = PA_2", "MDMRXD = PA_3", "MDMRTS = NC", "MDMCTS = NC"],
-            "target.clock_source"                  : "USE_PLL_MSI",
+            "target.macros_add"                    : ["CELLULAR_DEVICE=QUECTEL_BG96", "MDMTXD=PA_2", "MDMRXD=PA_3", "MDMRTS=PA_1", "MDMCTS=PA_0"],
+
+            "target.features_add"                  : ["BOOTLOADER"],
+            "target.bootloader_img"                : "bootloader/mbed-bootloader-extended.bin",
+
+
+            "target.header_offset"                 : "0x10000",
+            "target.app_offset"                    : "0x10400",
 
             "nsapi.default-cellular-sim-pin"       : "\"1111\"",
             "nsapi.default-cellular-apn"           : "\"everywhere\"",
@@ -37,31 +43,29 @@
             "cellular.use-apn-lookup"              : false,
 
             "mbed-client.sn-coap-duplication-max-msgs-count": 1,
-            "nsapi.dns-response-wait-time"      : 30000,
-            "client_app.partition_mode"         : 0,
-            "client_app.primary_partition_size" : "(1024*1024)",
 
-            "target.components_add"             : ["SPIF"],
-            "spif-driver.SPI_MOSI"              : "PB_5",
-            "spif-driver.SPI_MISO"              : "PA_6",
-            "spif-driver.SPI_CLK"               : "PA_5",
-            "spif-driver.SPI_CS"                : "PD_2",
-            "spif-driver.SPI_FREQ"              : 8000000,
-            "flash-start-address"               : "0x08000000",
-            "flash-size"                        : "(1024*1024)",
-            "sotp-section-1-address"            : "(MBED_CONF_APP_FLASH_START_ADDRESS + 48*1024)",
-            "sotp-section-1-size"               : "(16*1024)",
-            "sotp-section-2-address"            : "(MBED_CONF_APP_FLASH_START_ADDRESS + 64*1024)",
-            "sotp-section-2-size"               : "(16*1024)",
-            "sotp-num-sections"                 : 2,
+            "client_app.partition_mode"            : 0,
+            "client_app.primary_partition_size"    : "(1024*1024)",
 
-            "target.header_offset"              : "0x20000",
-            "target.app_offset"                 : "0x20400",
+            "target.components_add"                : ["SPIF"],
+            "spif-driver.SPI_FREQ"                 : 8000000,
+            "spif-driver.SPI_MOSI"                 : "PB_5",
+            "spif-driver.SPI_MISO"                 : "PA_6",
+            "spif-driver.SPI_CLK"                  : "PA_5",
+            "spif-driver.SPI_CS"                   : "PD_2",
 
-            "update-client.application-details" : "(MBED_CONF_APP_FLASH_START_ADDRESS + 128*1024)",
-            "update-client.storage-address"     : "(1024*1024*2)",
-            "update-client.storage-size"        : "(1024*1024*1)",
-            "update-client.storage-locations"   : "1"
+            "flash-start-address"                  : "0x08000000",
+            "flash-size"                           : "(1024*1024)",
+            "sotp-section-1-address"               : "(MBED_CONF_APP_FLASH_START_ADDRESS + MBED_CONF_APP_FLASH_SIZE - 2*(4*1024))",
+            "sotp-section-1-size"                  : "(4*1024)",
+            "sotp-section-2-address"               : "(MBED_CONF_APP_FLASH_START_ADDRESS + MBED_CONF_APP_FLASH_SIZE - 1*(4*1024))",
+            "sotp-section-2-size"                  : "(4*1024)",
+            "sotp-num-sections"                    : 2,
+
+            "update-client.application-details"    : "(MBED_CONF_APP_FLASH_START_ADDRESS + 64*1024)",
+            "update-client.storage-address"        : "(1024*1024*3)",
+            "update-client.storage-size"           : "(1024*1024*1)",
+            "update-client.storage-locations"      : "1"
         }
     },
     "config": {
@@ -112,7 +116,11 @@
         "sock-type": "TCP",
         "radio-access-technology": {
             "help": "Radio access technology to use. Value in integer: GSM=0, GSM_COMPACT=1, UTRAN=2, EGPRS=3, HSDPA=4, HSUPA=5, HSDPA_HSUPA=6, E_UTRAN=7, CATM1=8 ,NB1=9",
-            "value": 0
+            "value": 6
+        },
+        "tls-debug":{
+            "macro_name": "PAL_TLS_DEBUG_THRESHOLD",
+            "value": null
         }
     }
 }

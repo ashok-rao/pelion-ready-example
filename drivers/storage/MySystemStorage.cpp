@@ -63,7 +63,7 @@ BlockDevice *BlockDevice::get_default_instance()
         MBED_CONF_SPIF_DRIVER_SPI_MISO,
         MBED_CONF_SPIF_DRIVER_SPI_CLK,
         MBED_CONF_SPIF_DRIVER_SPI_CS,
-        MBED_CONF_SPIF_DRIVER_SPI_FREQ
+        1000000
     );
 
     return &default_bd;

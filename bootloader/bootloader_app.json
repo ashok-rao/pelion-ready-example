@@ -249,6 +249,25 @@
             "spif-driver.SPI_MISO"             : "PC_2",
             "spif-driver.SPI_CLK"              : "PB_13",
             "spif-driver.SPI_CS"               : "PA_6"
+        },
+        "MTB_STM_L475": {
+            "target.components_add"            : ["SPIF"],
+            "flash-start-address"              : "0x08000000",
+            "flash-size"                       : "(1024*1024)",
+            "nvstore.area_1_address"           : "(MBED_CONF_APP_FLASH_START_ADDRESS + MBED_CONF_APP_FLASH_SIZE - 2*(2*1024))",
+            "nvstore.area_1_size"              : "(2*1024)",
+            "nvstore.area_2_address"           : "(MBED_CONF_APP_FLASH_START_ADDRESS + MBED_CONF_APP_FLASH_SIZE - 1*(2*1024))",
+            "nvstore.area_2_size"              : "(2*1024)",
+            "update-client.application-details": "(MBED_CONF_APP_FLASH_START_ADDRESS + 32*1024)",
+            "update-client.storage-address"    : "(1024*1024*2)",
+            "update-client.storage-size"       : "(1024*1024*1)",
+            "update-client.storage-locations"  : 1,
+            "application-start-address"        : "(MBED_CONF_APP_FLASH_START_ADDRESS + 33*1024)",
+            "max-application-size"             : "DEFAULT_MAX_APPLICATION_SIZE",
+            "spif-driver.SPI_MOSI"             : "PB_5",
+            "spif-driver.SPI_MISO"             : "PA_6",
+            "spif-driver.SPI_CLK"              : "PA_5",
+            "spif-driver.SPI_CS"               : "PD_2"
         }
 
     }

@@ -19,7 +19,8 @@
 
 #include "mbed.h"
 #include "simple-mbed-cloud-client.h"
-#include "FATFileSystem.h"
+//#include "FATFileSystem.h"
+#include "LittleFileSystem.h"
 
 DigitalOut modem_power_on(PE_15);
 
@@ -29,7 +30,10 @@ EventQueue eventQueue;
 
 // Default block device
 BlockDevice *bd = BlockDevice::get_default_instance();
-FATFileSystem fs("fs");
+//FATFileSystem fs("fs");
+LittleFileSystem fs("fs", bd);
+//StorageHelper sh(bd, &fs);
+
 
 // Default network interface object
 NetworkInterface *net = NetworkInterface::get_default_instance();
@@ -105,11 +109,57 @@ void registered(const ConnectorClientEndpointInfo *endpoint) {
 
 int main(void) {
 
-	modem_power_on = 1;
-
     printf("Starting Simple Pelion Device Management Client example\n");
     printf("Connecting to the network...\n");
 
+/*
+       //Erase SPI Flash
+    printf("Init\n");
+    int init_status = bd->init();
+    printf("Init status = %d\n", init_status);
+    if(init_status == 0) {
+        printf("spif size: %llu\n",         bd->size());
+        printf("spif read size: %llu\n",    bd->get_read_size());
+        printf("spif erase size: %llu\n",   bd->get_erase_size());
+    }
+
+#if 0
+    char buffer[296];
+    uint32_t address = 2097152;
+    uint32_t size = 296;
+    bd->read(buffer, address, size);
+                 for(int i = 232; i<265; i++){
+                printf("%x\n", buffer[i]);
+        }
+#endif
+
+    //Un-comment the below block if forcible flash erase is required.
+    printf("Erasing SPIF..\r\n");
+    int erase_status = bd->erase(0, bd->size());
+    if (erase_status == 0) {
+         printf("SPIF erased\n");
+    }
+ // printf("Mounting Block Device..\r\n");
+ //  int error =  fs.mount(bd);
+  if(error){
+     printf("Formatting..\r\n");
+	  //fs.reformat(bd);
+      fs.format(bd);
+  }
+  printf("Mounting Block Device..\r\n");
+  int error1 =  fs.mount(bd);
+  printf("FS mount error = %lu", error1);
+  if (error1 != 0) {
+      return -1;
+  }
+
+
+    // Call StorageHelper to initialize FS for us
+  //  sh.init();
+// */
+
+	modem_power_on = 1;
+	
     // Connect to the internet (DHCP is expected to be on)
     nsapi_error_t status = net->connect();
 
@@ -119,6 +169,8 @@ int main(void) {
     }
 
     printf("Connected to the network successfully. IP address: %s\n", net->get_ip_address());
+
+    printf("******** This line demonstrates a FW update ********\r\n");
 
     // SimpleMbedCloudClient handles registering over LwM2M to Pelion Device Management
     SimpleMbedCloudClient client(net, bd, &fs);
@@ -155,7 +207,7 @@ int main(void) {
     // Placeholder for callback to update local resource when GET comes.
     // The timer fires on an interrupt context, but debounces it to the eventqueue, so it's safe to do network operations
     Ticker timer;
-    timer.attach(eventQueue.event(&fake_button_press), 5.0);
+    timer.attach(eventQueue.event(&fake_button_press), 10.0);
 
     // You can easily run the eventQueue in a separate thread if required
     eventQueue.dispatch_forever();
